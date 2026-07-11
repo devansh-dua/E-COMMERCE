@@ -21,18 +21,18 @@ module.exports.loginUser = async (req, res, next) => {
             username
         })
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
                 message: "Please enter correct username"
             })
         }
 
         let passwordMatched = bcrypt.compareSync(password, user.password); // true
-        if(!passwordMatched){
+        if (!passwordMatched) {
             return res.status(400).json({
                 message: "Incorrect password"
             })
-        }   
+        }
 
         // If user has entered correct username and password
         // provide jwt to the user
@@ -66,13 +66,27 @@ module.exports.createUser = async (req, res, next) => {
         address,
     } = req.body;
 
+
     if (!username || !password) {
         return res.status(400).json({
             message: "Username or password missing"
         })
     }
 
+
     try {
+
+        let existingUser = await usersModel.findOne({
+            username
+        })
+
+        if (existingUser) {
+            return res.status(400).json({
+                message: "Username is already present try another one"
+            });
+        }
+
+    
         let user = await usersModel.create({
             username,
             password,

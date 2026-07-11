@@ -3,7 +3,8 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const PORT = 4444;
-
+const cors = require('cors');
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
