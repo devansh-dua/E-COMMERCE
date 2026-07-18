@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router";
@@ -8,6 +8,7 @@ const authorisationContext = createContext({
   authenticate: function () {},
   token: null,
   user: null,
+  cart: [],
   logout: function () {}, // These are mentioned here so that when i use this context
   // mere pass autoComplete mei options visible rahein
 });
@@ -22,14 +23,16 @@ const AuthContext = ({ children }) => {
     logout: Logout user and clear localStorage token and user data
     */
 
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user") || null) || null,
+  );
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
   function authenticate(token, user = null) {
     localStorage.setItem("token", token); // backend se aaega yeh
-    localStorage.setItem("user", user); // backend se aaega user
+    localStorage.setItem("user", JSON.stringify(user)); // backend se aaega user
+    console.log(user);
     setToken(token);
-
     setUser(user);
 
     if (!token) {
@@ -41,6 +44,16 @@ const AuthContext = ({ children }) => {
     navigate("/dashboard", {
       replace: true,
     });
+  }
+
+  function setCart(cart) {
+    const newUser = {
+      ...user,
+      cart,
+    };
+    setUser(newUser);
+
+    localStorage.setItem("user", JSON.stringify(newUser));
   }
 
   function logout() {
@@ -59,8 +72,10 @@ const AuthContext = ({ children }) => {
     <authorisationContext.Provider
       value={{
         authenticate,
-        isAuthenticated: Boolean(localStorage.getItem("user", user)),
+        isAuthenticated: Boolean(localStorage.getItem("token")),
         user,
+        cart: user?.cart || [],
+        setCart,
         token,
         logout,
       }}
@@ -70,5 +85,11 @@ const AuthContext = ({ children }) => {
   );
 };
 
+function useAuth() {
+  const data = useContext(authorisationContext);
+
+  return data;
+}
 export default AuthContext;
 export { authorisationContext };
+export { useAuth };

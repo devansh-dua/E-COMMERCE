@@ -1,13 +1,12 @@
 import React from "react";
 import { useState } from "react";
 import api from "../api";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import "./Signup.css";
 
 const Signup = () => {
-  // const [email,setEmail] = useState("");
-  // const [password,setPassword] = useState("");
-  // const [username,setUsername] = useState("");
   const navigate = useNavigate();
+
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -25,34 +24,45 @@ const Signup = () => {
   async function signupHandler() {
     try {
       let { data } = await api.post("/users/signup", user);
+
       navigate("/login", {
         replace: true,
       });
-      
     } catch (error) {
       console.log(error);
     }
   }
 
   return (
-    <div>
-      <input
-        onChange={(ev) => onChangeHandler("username", ev)}
-        type="text"
-        placeholder="Enter username"
-      />
-      <input
-        onChange={(ev) => onChangeHandler("email", ev)}
-        type="text"
-        placeholder="Enter email"
-      />
-      <input
-        onChange={(ev) => onChangeHandler("password", ev)}
-        type="text"
-        placeholder="Enter password"
-      />
+    <div className="signup-container">
+      <div className="signup-card">
+        <h2 className="signup-title">Create Account</h2>
 
-      <button onClick={signupHandler}>Signup</button>
+        <input
+          className="signup-input"
+          onChange={(ev) => onChangeHandler("username", ev)}
+          type="text"
+          placeholder="Enter username"
+        />
+
+        <input
+          className="signup-input"
+          onChange={(ev) => onChangeHandler("email", ev)}
+          type="email"
+          placeholder="Enter email"
+        />
+
+        <input
+          className="signup-input"
+          onChange={(ev) => onChangeHandler("password", ev)}
+          type="password"
+          placeholder="Enter password"
+        />
+
+        <button className="signup-btn" onClick={signupHandler}>
+          Signup
+        </button>
+      </div>
     </div>
   );
 };

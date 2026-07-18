@@ -2,12 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router";
 import api from "../api";
 import { useContext } from "react";
-import { authorisationContext } from "../context/AuthContext";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const {authenticate} = useContext(authorisationContext);
+  const { authenticate } = useAuth();
+
   const [user, setUser] = useState({
     password: "",
     username: "",
@@ -32,20 +33,28 @@ const Login = () => {
   }
 
   return (
-    <div>
-      <input
-        onChange={(ev) => onChangeHandler("username", ev)}
-        type="text"
-        placeholder="Enter username"
-      />
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Login</h2>
 
-      <input
-        onChange={(ev) => onChangeHandler("password", ev)}
-        type="text"
-        placeholder="Enter password"
-      />
+        <input
+          className="login-input"
+          onChange={(ev) => onChangeHandler("username", ev)}
+          type="text"
+          placeholder="Enter username"
+        />
 
-      <button onClick={loginHandler}>Login</button>
+        <input
+          className="login-input"
+          onChange={(ev) => onChangeHandler("password", ev)}
+          type="password"
+          placeholder="Enter password"
+        />
+
+        <button className="login-btn" onClick={loginHandler}>
+          Login
+        </button>
+      </div>
     </div>
   );
 };
